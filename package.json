@@ -1,0 +1,25 @@
+{
+  "name": "ep_export_authors",
+  "version": "0.0.1",
+  "description": "Etherpad plugin to add author information to the html export",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository" : { 
+    "type" : "git",
+    "url" : "https://github.com/gared/ep_export_authors.git"
+  },
+  "keywords": [
+    "etherpad",
+    "lite",
+    "plugin",
+    "author",
+    "color",
+    "information",
+    "export",
+    "pad"
+  ],
+  "author": "gared <stefan@stefans-entwicklerecke.de> (STEFAN MUELLER)",
+  "license": "MIT",
+  "readmeFilename": "README.md"
+}

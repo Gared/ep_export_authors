@@ -1,0 +1,10 @@
+{
+  "parts": [
+    {
+      "name": "ep_export_authors",
+      "hooks": {
+        "getLineHTMLForExport": "ep_export_authors/index"
+      }
+    }
+  ]
+}
