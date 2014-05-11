@@ -60,7 +60,7 @@ function _authorsOfLine(alineAttrs, apool) {
 }
 
 function _getHTMLString(authorName, authorColor, text) {
-  return '<span class="' + authorName + '" style="background-color:' + authorColor + '">' + text + '</span>';
+  return '<span class="' + authorName + '" title="' + authorName + '" style="background-color:' + authorColor + '">' + text + '</span>';
 }
 
 function _getAuthorColor(authorName) {
@@ -72,10 +72,9 @@ function _getAuthorColor(authorName) {
   }
   if (authorColorPool) {
     if (!authorColorPool[hashKey]) {
-      authorColorPool[hashKey] = Math.random()*0xFFFFF<<0;
+      authorColorPool[hashKey] = ('000000' + (Math.random()*0xFFFFFF<<0).toString(16)).slice(-6);
     }
     color = authorColorPool[hashKey];
-    console.log(color);
   }
   return "#"+color;
 }
