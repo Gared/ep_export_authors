@@ -37,10 +37,19 @@ exports.getLineHTMLForExport = function (hook, context) {
     });*/
 
     authors.forEach(function(author) {
-      var color = _getAuthorColor(author.name);
-      newLineHTML += _getHTMLString(author.name.replace('.','_'), color, context.text.substring(charPos, charPos + author.chars));
+      var authorName = author.name;
+      var color = null;
+
+      if (authorName) {
+        authorName = authorName.replace('.','_');
+        color = _getAuthorColor(author.name);
+      }
+      newLineHTML += _getHTMLString(authorName, color, context.text.substring(charPos, charPos + author.chars));
       charPos += author.chars;
     });
+    if (newLineHTML == "") {
+      return;
+    }
     return newLineHTML+'<br/>';
 }
 
@@ -50,17 +59,22 @@ function _authorsOfLine(alineAttrs, apool) {
     var opIter = Changeset.opIterator(alineAttrs);
     while (opIter.hasNext()) {
       var op = opIter.next();
+      var author = null;
       if (op.attribs) {
-        var author= Changeset.attribsAttributeValue(op.attribs, "author", apool);
-        authors.push({ 'name': author, 'chars': op.chars});
+        author= Changeset.attribsAttributeValue(op.attribs, "author", apool);
       }
+      authors.push({ 'name': author, 'chars': op.chars});
     }
   }
   return authors;
 }
 
 function _getHTMLString(authorName, authorColor, text) {
-  return '<span class="' + authorName + '" title="' + authorName + '" style="background-color:' + authorColor + '">' + text + '</span>';
+  if (authorName) {
+    return '<span class="' + authorName + '" title="' + authorName + '" style="background-color:' + authorColor + '">' + text + '</span>';
+  } else {
+    return '<span class="anonymous" title="anonymous">' + text + '</span>';
+  }
 }
 
 function _getAuthorColor(authorName) {
