@@ -8,34 +8,9 @@ exports.getLineHTMLForExport = function (hook, context) {
     var authors = _authorsOfLine(context.attribLine, context.apool);
     var newLineHTML = "";
     var charPos = 0;
-
-    // Use this code if this function is called in an asynchronous way
-    /*async.series([
-      function(cb){
-        async.each(authors, function(author, callback) {
-          console.log(author);
-          db.getSub("globalAuthor:" + author, ["colorId"], function(err, result) {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log("color: "+result);
-              newLineHTML += _getHTMLString(author.name.replace('.','_'), result, context.text.substring(charPos, charPos + author.chars));
-              charPos += author.chars;
-            }
-            callback();
-          });
-        }, function(err) {
-          if (err) {
-            console.log(err);
-          }
-          cb();
-        });
-      }
-    ],
-    function(err, results){
-      return newLineHTML+'<br/>';
-    });*/
-
+    if (context.lineContent[0] === '*') {
+	context.lineContent = context.lineContent.substr(1);
+    }
     authors.forEach(function(author) {
       var authorName = author.name;
       var color = null;
@@ -44,13 +19,25 @@ exports.getLineHTMLForExport = function (hook, context) {
         authorName = authorName.replace('.','_');
         color = _getAuthorColor(author.name);
       }
-      newLineHTML += _getHTMLString(authorName, color, context.text.substring(charPos, charPos + author.chars));
+      var plainAuthorText = context.text.substring(charPos, charPos + author.chars);
+      var newHTML = _getHTMLString(authorName, color, plainAuthorText);
+      context.lineContent = context.lineContent.replace(plainAuthorText, newHTML);
+      
+      var end = context.lineContent.indexOf(newHTML) + newHTML.length;
+      newLineHTML += context.lineContent.substr(0, end);
+      context.lineContent = context.lineContent.substr(end);
+
       charPos += author.chars;
     });
-    if (newLineHTML == "") {
+    if (newLineHTML === "") {
       return;
     }
-    return newLineHTML+'<br/>';
+
+    if (context.lineContent.length) {
+      newLineHTML += context.lineContent;
+    }
+    context.lineContent = newLineHTML+'<br/>';
+    return true;
 }
 
 function _authorsOfLine(alineAttrs, apool) {
