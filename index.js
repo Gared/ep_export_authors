@@ -50,7 +50,7 @@ exports.getLineHTMLForExport = function (hook, context) {
     if (newLineHTML == "") {
       return;
     }
-    return newLineHTML+'<br/>';
+    return context.lineContent = newLineHTML;
 }
 
 function _authorsOfLine(alineAttrs, apool) {
